@@ -1,14 +1,14 @@
-//Navigation
+Navigation
 
 const expenseContainer = document.getElementById('expense-container');
 const dashboardContainer = document.getElementById('dashboard-content');
 const annualContainer = document.getElementById('annual-container');
 const settingsContainer = document.getElementById('settings-container');
+
 const historyButton = document.getElementById('history');
 const dashboardButton = document.getElementById('dashboard');
 const settingsButton = document.getElementById('settings');
-const h3History = document.getElementById('h3-history');
-const h3Dashboard = document.getElementById('h3-dashboard');
+
 
 historyButton.addEventListener('click', function(event) {
 
@@ -16,7 +16,6 @@ historyButton.addEventListener('click', function(event) {
     dashboardContainer.style.display = 'none';
     annualContainer.style.display = 'none';
     settingsContainer.style.display = 'none';
-    h3Dashboard.style.display = 'none';
 
     document.title = 'History';
 
@@ -42,6 +41,3 @@ settingsButton.addEventListener('click', function(event) {
 
     document.title = 'Settings';
 })
-
-
-
