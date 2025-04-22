@@ -11,6 +11,21 @@ if (!isset($_SESSION['user_id'])) {
 $userId = $_SESSION['user_id'];
 $expenses = getExpenses($conn, $userId);
 $totalExpenses = getTotalExpenses($conn, $userId); // Fetch the total expenses
+
+// Fetch total expenses for each category
+$stmt = $conn->prepare("SELECT category, SUM(amount) AS total FROM expenses WHERE user_id = ? GROUP BY category");
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$categories = [];
+$totals = [];
+
+while ($row = $result->fetch_assoc()) {
+    $categories[] = $row['category'];
+    $totals[] = $row['total'];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +36,8 @@ $totalExpenses = getTotalExpenses($conn, $userId); // Fetch the total expenses
 
         <title>Dashboard</title>
         <link rel="stylesheet" href="dashboard.css">
-        
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js -->
+
 
     </head>
 
@@ -87,7 +103,7 @@ $totalExpenses = getTotalExpenses($conn, $userId); // Fetch the total expenses
                                 </div>
                             
                                 <div class ="expense-button">
-                                        <button class ="submit" id="add-expense">Add Expense</button>
+                                        <button class ="submit" name="add-expense">Add Expense</button>
                                 </div>
 
                             </form>
@@ -100,9 +116,43 @@ $totalExpenses = getTotalExpenses($conn, $userId); // Fetch the total expenses
 
                     <div class="annual-container" id="annual-container">
 
-                        <h2>Annual Expenses</h2>
+                        <h2>Chart Expenses</h2>
                         <hr />
-                        <p>Simple Graph!</p>
+                            <canvas id="expenseChart"></canvas> <!-- Canvas for the chart -->
+
+                            <script>
+                                // Pass PHP data to JavaScript
+                                const categories = <?php echo json_encode($categories); ?>;
+                                const totals = <?php echo json_encode($totals); ?>;
+
+                                // Create the pie chart
+                                const ctx = document.getElementById('expenseChart').getContext('2d');
+                                const expenseChart = new Chart(ctx, {
+                                    type: 'pie', // Pie chart type
+                                    data: {
+                                        labels: categories, // Categories as labels
+                                        datasets: [{
+                                            label: 'Annual Expenses',
+                                            data: totals, // Totals as data
+                                            backgroundColor: [
+                                                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                                            ], // Colors for each slice
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        plugins: {
+                                            legend: {
+                                                position: 'top', // Position of the legend
+                                            },
+                                            title: {
+                                                display: true,
+                                                text: 'Expenses by Category'
+                                            }
+                                        }
+                                    }
+                                });
+                            </script>
                         
                     </div>
                     
