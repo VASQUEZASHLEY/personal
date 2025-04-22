@@ -1,0 +1,83 @@
+body {
+
+    margin: 0;
+}
+
+.register-container {
+
+    background-color: slategray;
+    width: 400px;
+    height: 87vh;
+    padding: 50px;
+
+    
+}
+
+h1 {
+    
+    text-align: center;
+    font-size: 35px;
+    margin-top: 50px;
+    color: black;
+    word-spacing: 3px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+h2 {
+
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    margin-top: 50px;
+
+}
+
+.input-container .input-field {
+    
+    margin-top: 20px;
+    border-radius: 5px;
+    border: none;
+    font-size: 20px;
+    padding: 3px 10px;
+    display: block;
+    height: 30px;
+    
+}
+
+.input-container {
+    display: flex;
+    justify-content: center;
+}
+
+::placeholder {
+
+    font-size: 15px;
+}
+
+.submit-button {
+    background-color: navy;
+    color: white;
+    border: none;
+    padding: 10px 105px;
+    font-size: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+    cursor: pointer;
+
+}
+
+.submit {
+    display: flex; /* Enables flexbox layout */
+    justify-content: center; /* Centers horizontally */
+}
+
+.login-link {
+
+    margin-top: 20px;
+    font-size: 15px;
+    text-align: center;
+}
+
+.login-link a {
+    
+    text-decoration: none;
+}

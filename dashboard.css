@@ -1,0 +1,186 @@
+body {
+
+    margin: 0;
+    padding: 0;
+}
+
+.dashboard-container {
+
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+.dashboard-left {
+
+    background-color: slategray;
+    width: 20%;
+    height: 100vh;
+    padding: 50px;
+    box-sizing: border-box;
+}
+
+.dashboard-right {
+
+    width: 80%;
+    box-sizing: border-box;
+    background-color: whitesmoke;
+}
+
+.circle-parent {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+}
+
+.circle {
+    display: flex;
+    justify-content: center;
+    color: black;
+    background-color: white;
+    padding: 10px 10px;
+    align-items: center;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+
+h1 {
+
+    text-align: center;
+    font-size: 15px;
+}
+.dashboard-parent {
+
+    margin-top: 50px;
+}
+
+.dashboard-interface h2 {
+
+    color: black;
+    text-align: left;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
+
+}
+
+
+
+.dashboard-interface h2:hover {
+
+    color: white;
+    background-color: navy;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+h2 a {
+
+    text-decoration: none;
+    color: black;
+}
+
+h3 {
+
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+.dashboard-content {
+
+    border: 1px solid black;
+    width: 50%;
+    margin: 20px;
+    border-radius: 5px;
+}
+
+.dashboard-content h2 {
+
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+.input-section {
+
+    text-align: center;
+}
+
+.input {
+
+    margin-top: 10px;
+    border-radius: 5px;
+    font-size: 15px;
+    height: 20px;
+    
+}
+
+.expense-button {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.submit {
+
+    margin-top: 20px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    padding: 5px 5px;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+.submit:hover {
+
+    background-color: navy;
+    color: white;
+
+}
+
+.annual-container {
+    border: 1px solid black;
+    width: 50%;
+    margin: 20px;
+    border-radius: 5px;
+}
+
+.annual-container h2 {
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+.expense-container {
+    border: 1px solid black;
+    width: 90%;
+    margin: 40px;
+    border-radius: 5px;
+}
+
+.expense-container h2 {
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 10px;
+    text-align: center;
+}

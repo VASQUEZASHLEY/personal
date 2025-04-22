@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" href="register.css">
+
+</head>
+
+<body>
+    
+    <div class="register-container">
+        <h1>Your Personal Budget Tracker!</h1>
+        <hr />
+        <h2>Register</h2>
+
+        <form method="post" action="server.php">
+
+            <div class="input-container">
+                <input type="text" class="input-field" placeholder="Full Name" name="fname" required>
+            </div>
+
+            <div class="input-container">
+                <input type="email" class="input-field" placeholder="Email" name="email" required>
+            </div>
+
+            <div class="input-container">
+                <input type="password" class="input-field" placeholder="Password" name="password" required>
+            </div>
+
+            <div class="input-container">
+                <input type="password" class="input-field" placeholder="Confirm Password" name="confirmPassword" required>
+            </div>
+
+            <div class="submit">
+                <button class="submit-button" name="register">Register</button>
+            </div>
+
+            <div class="login-link">
+                <p>You have already an account? <a href="index.html">Login</a></p>
+            </div>
+        
+        </form>
+
+    </div>
+
+</body>
+
+</html>

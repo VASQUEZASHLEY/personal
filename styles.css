@@ -1,0 +1,92 @@
+body {
+
+    margin: 0;
+}
+
+.login-container {
+
+    background-color: slategray;
+    width: 400px;
+    height: 87vh;
+    padding: 50px;
+
+    
+}
+
+h1 {
+    
+    text-align: left;
+    font-size: 50px;
+    color: black;
+    word-spacing: 3px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+h2 {
+
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    margin-top: 50px;
+
+}
+
+.input-container .input-field {
+    
+    margin-top: 20px;
+    border-radius: 5px;
+    border: none;
+    font-size: 20px;
+    padding: 3px 10px;
+    display: block;
+    height: 30px;
+    
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+::placeholder {
+
+    font-size: 15px;
+}
+
+.submit-button {
+    background-color: navy;
+    color: white;
+    border: none;
+    padding: 10px 115px;
+    font-size: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+    cursor: pointer;
+
+}
+
+.submit {
+    display: flex; /* Enables flexbox layout */
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+}
+
+.forgot-password {
+    margin-top: 20px;
+    font-size: 15px;
+    text-align: center;
+}
+
+.forgot-password a {
+    text-decoration: none;
+}
+
+.register {
+    margin-top: 20px;
+    font-size: 15px;
+    text-align: center;
+}
+
+.register a {
+    text-decoration: none;
+}
