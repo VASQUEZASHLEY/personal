@@ -5,8 +5,10 @@ body {
 .forgot-container {
     background-color: slategray;
     width: 400px;
-    height: 87vh;
-    padding: 50px;
+    height: 86vh;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 5px;
 }
 
 h1 {
