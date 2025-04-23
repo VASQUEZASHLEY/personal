@@ -64,7 +64,7 @@ while ($row = $result->fetch_assoc()) {
                         <h2 id = "dashboard">Dashboard</h2>
                         <h2 id = "history">History</h2>
                         <h2 id = "settings">Settings</h2>
-                        <h2><a href="index.html">Logout</a></h2>
+                        <h2><a href="logout.php">Logout</a></h2>
                     </div>
                 </div>
 
@@ -94,12 +94,12 @@ while ($row = $result->fetch_assoc()) {
 
                                 <div class ="input-section">
                                         <label for = "input-amount">Amount:</label>
-                                        <input type ="number" name="amount" class = "input" placeholder = "Enter Amount" required>
+                                        <input type ="number" name="amount" class = "input" placeholder = "Enter Amount">
                                 </div>
 
                                 <div class ="input-section">
                                         <label for ="input-date">Date:</label>
-                                        <input type ="date" name="input-date" class = "input" required>
+                                        <input type ="date" name="input-date" class = "input">
                                 </div>
                             
                                 <div class ="expense-button">
@@ -205,5 +205,4 @@ while ($row = $result->fetch_assoc()) {
     </body>
 
 </html>
-
 
