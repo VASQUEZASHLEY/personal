@@ -14,6 +14,7 @@
             <h1>Your Personal Budget Tracker!</h1>
             <hr />
             <h2>Reset Password</h2>
+            <p>Please enter your email and full name for verification</p>
 
             <form method="post" action="server.php">
 
@@ -21,14 +22,18 @@
                 <input type="email" class="input-field" placeholder="Email" name="email" required>
                 </div>
 
+                <div class="input-container">
+                <input type="text" class="input-field" placeholder="Your full name" name="attempt" required>
+                </div>
+
                 <div class="submit">
-                    <button class="submit-button" id="submit" name="reset">Send Reset Link</button>
+                    <button class="submit-button" id="submit" name="reset">Verify & Reset</button>
                 </div>
 
             </form>
 
             <div class="back">
-                <a href="index.html">Back to Login</a>
+                <a href="index.php">Back to Login</a>
             </div>
             
         </div>
