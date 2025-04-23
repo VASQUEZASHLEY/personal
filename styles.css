@@ -7,16 +7,23 @@ body {
 
     background-color: slategray;
     width: 400px;
-    height: 87vh;
-    padding: 50px;
+    height: 86vh;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 5px;
 
     
 }
 
+.login-form {
+
+    margin-top: 20%;
+}
+
 h1 {
     
-    text-align: left;
-    font-size: 50px;
+    text-align: center;
+    font-size: 30px;
     color: black;
     word-spacing: 3px;
     font-family: 'Courier New', Courier, monospace;
