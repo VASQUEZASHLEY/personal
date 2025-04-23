@@ -124,32 +124,63 @@ while ($row = $result->fetch_assoc()) {
                                 // Pass PHP data to JavaScript
                                 const categories = <?php echo json_encode($categories); ?>;
                                 const totals = <?php echo json_encode($totals); ?>;
-
+                                
+                                // Calculate total for percentages
+                                const total = totals.reduce((a, b) => a + b, 0);
+                                
                                 // Create the pie chart
                                 const ctx = document.getElementById('expenseChart').getContext('2d');
                                 const expenseChart = new Chart(ctx, {
-                                    type: 'pie', // Pie chart type
+                                    type: 'doughnut', // Changed to doughnut for better appearance
                                     data: {
-                                        labels: categories, // Categories as labels
+                                        labels: categories,
                                         datasets: [{
                                             label: 'Annual Expenses',
-                                            data: totals, // Totals as data
+                                            data: totals,
                                             backgroundColor: [
                                                 '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
-                                            ], // Colors for each slice
+                                            ],
+                                            borderWidth: 2,
+                                            borderColor: '#ffffff'
                                         }]
                                     },
                                     options: {
                                         responsive: true,
+                                        maintainAspectRatio: true,
                                         plugins: {
                                             legend: {
-                                                position: 'top', // Position of the legend
+                                                position: 'right',
+                                                labels: {
+                                                    padding: 20,
+                                                    font: {
+                                                        size: 12
+                                                    }
+                                                }
                                             },
                                             title: {
                                                 display: true,
-                                                text: 'Expenses by Category'
+                                                text: 'Expenses by Category',
+                                                font: {
+                                                    size: 16,
+                                                    weight: 'bold'
+                                                },
+                                                padding: 20
+                                            },
+                                            tooltip: {
+                                                callbacks: {
+                                                    label: function(context) {
+                                                        const value = context.raw;
+                                                        const percentage = ((value / total) * 100).toFixed(1);
+                                                        return `${context.label}: $${value} (${percentage}%)`;
+                                                    }
+                                                }
                                             }
-                                        }
+                                        },
+                                        animation: {
+                                            animateScale: true,
+                                            animateRotate: true
+                                        },
+                                        cutout: '60%' // Makes the doughnut hole
                                     }
                                 });
                             </script>
