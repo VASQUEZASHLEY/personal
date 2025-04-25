@@ -10,6 +10,7 @@ const dashboardButton = document.getElementById('dashboard');
 const settingsButton = document.getElementById('settings');
 
 
+
 historyButton.addEventListener('click', function(event) {
 
     expenseContainer.style.display = 'block';
