@@ -1,11 +1,10 @@
 <?php
 
-session_start();
-include 'connect.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-require 'vendor/autoload.php';
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+include 'connect.php';
 
 define('ADMIN_USERNAME', 'ashley01');
 define('ADMIN_PASSWORD', 'admin01');
@@ -14,9 +13,17 @@ function isAdmin() {
     return isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
 }
 
+function setError($message) {
+    $_SESSION['error'] = $message;
+}
+
+function setSuccess($message) {
+    $_SESSION['success'] = $message;
+}
+
 function checkValidRoute() {
     // Allow admin routes without user session
-    $allowedPaths = ['index.php', 'register.html', 'forgot.html', 'admin-login.php', 'admin-dashboard.php'];
+    $allowedPaths = ['index.php', 'register.php', 'admin-login.php', 'admin-dashboard.php'];
     $currentPath = basename($_SERVER['PHP_SELF']);
     
     // Skip check for admin pages if admin is logged in
@@ -39,28 +46,29 @@ if (isset($_POST['register'])) {
 
     // Validate full name (only alphabetical characters and spaces)
     if (!preg_match("/^[a-zA-Z ]*$/", $fullName)) {
-        echo "<script>
-                alert('Full name should contain only alphabetical characters!');
-                window.location.href = 'register.html';
-              </script>";
+        setError('Full name can only contain letters and spaces');
+        header("Location: register.php");
         exit;
     }
 
     // Validate email domain
-    if (!preg_match("/^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com)$/", $email)) {
-        echo "<script>
-                alert('Only @google.com and @yahoo.com email addresses are allowed!');
-                window.location.href = 'register.html';
-              </script>";
+    if (!preg_match("/^[a-zA-Z0-9._%+-]+@((gmail\.com|yahoo\.com|outlook\.com|hotmail\.com)|(.*\.edu(\.[a-z]{2})?))$/", $email)) {
+        setError('Invalid email domain. Please use an educational (.edu) or common email provider');
+        header("Location: register.php");
         exit;
     }
 
-    // Check if passwords match
-    if ($password != $confirmPassword) {
-        echo "<script>
-                alert('Password does not match!');
-                window.location.href = 'register.html';
-              </script>";
+    // Validate password length first
+    if (strlen($password) < 8) {
+        setError('Password must be at least 8 characters long');
+        header("Location: register.php");
+        exit;
+    }
+
+    // Check if passwords match using strict comparison
+    if ($password !== $confirmPassword) {
+        setError('Passwords do not match. Please try again.');
+        header("Location: register.php");
         exit;
     }
 
@@ -68,10 +76,8 @@ if (isset($_POST['register'])) {
     $checkEmail = $conn->query("SELECT * FROM users WHERE email = '$email'");
 
     if ($checkEmail->num_rows > 0) {
-        echo "<script>
-                alert('Email Address Already exists!');
-                window.location.href = 'register.html';
-              </script>";
+        setError('This email address is already registered');
+        header("Location: register.php");
         exit;
     } else {
         // Hash the password before storing it
@@ -82,15 +88,11 @@ if (isset($_POST['register'])) {
         $stmt->bind_param("sss", $fullName, $email, $hashedPassword);
 
         if ($stmt->execute()) {
-            echo "<script>
-                    alert('Registration successful! Please log in.');
-                    window.location.href = 'index.php';
-                  </script>";
+            setSuccess('Registration complete! Please log in to continue.');
+            header("Location: register.php");
         } else {
-            echo "<script>
-                    alert('Error: Could not register user.');
-                    window.location.href = 'register.html';
-                  </script>";
+            setError('Registration failed. Please try again.');
+            header("Location: register.php");
         }
 
         $stmt->close();
@@ -112,35 +114,30 @@ if (isset($_POST['login'])) {
         $user = $result->fetch_assoc();
 
         if ($user['is_banned'] == 1) {
-            echo "<script>
-                    alert('Your account has been banned. Please contact administrator.');
-                    window.location.href = 'index.php';
-                  </script>";
+            setError('Access Denied: Your account has been suspended. Please contact the administrator.');
+            header("Location: index.php");
             exit;
         }
 
         // Verify the hashed password
-        if (password_verify($password, $user['password'])) {
-            // Store user_id in the session
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['fullName'] = $user['fullName']; // Optional: Store full name for personalized greetings
-            $_SESSION['is_admin'] = $user['is_admin'] ?? false;
-            header("Location: dashboard.php");
+        if (!password_verify($password, $user['password'])) {
+            setError('Invalid password. Please try again.');
+            header("Location: index.php"); // Ensure this redirects to index.php
             exit;
-        } else {
-            echo "<script>
-                    alert('Invalid Password!');
-                    window.location.href = 'index.php';
-                  </script>";
         }
-    } else {
-        echo "<script>
-                alert('Email Address not found!');
-                window.location.href = 'index.php';
-              </script>";
-    }
 
-    $stmt->close();
+        // If password is correct, proceed with login
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['fullName'] = $user['fullName'];
+        $_SESSION['is_admin'] = $user['is_admin'] ?? false;
+        header("Location: dashboard.php");
+        exit;
+    } else {
+        setError('Email address not found. Please check and try again.');
+        $stmt->close();
+        header("Location: index.php"); // Ensure this redirects to index.php
+        exit;
+    }
 }
 
 if (isset($_POST['admin_login'])) {
@@ -152,10 +149,8 @@ if (isset($_POST['admin_login'])) {
         header('Location: admin-dashboard.php');
         exit;
     } else {
-        echo "<script>
-                alert('Invalid admin credentials!');
-                window.location.href = 'admin-login.php';
-              </script>";
+        setError('Invalid administrator credentials');
+        header("Location: admin-login.php");
     }
 }
 
@@ -165,78 +160,11 @@ if (isset($_GET['logout'])) {
     exit;
 }
 
-function calculateSimilarity($str1, $str2) {
-    $leven = levenshtein(strtolower($str1), strtolower($str2));
-    $maxLen = max(strlen($str1), strlen($str2));
-    return (1 - ($leven / $maxLen)) * 100;
-}
-
-if (isset($_POST["reset"])) {
-    $email = $_POST["email"];
-    $attempt = $_POST["attempt"]; // User's attempt at full name
-    
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
-        // Check similarity with fullname only
-        $nameSimility = calculateSimilarity($attempt, $user['fullName']);
-        
-        if ($nameSimility >= 90) {
-            $_SESSION['reset_email'] = $email;
-            header("Location: reset-password.php");
-            exit;
-        } else {
-            echo "<script>
-                    alert('Verification failed. Please enter your correct full name.');
-                    window.location.href = 'forgot.html';
-                  </script>";
-        }
-    } else {
-        echo "<script>
-                alert('Email address not found!');
-                window.location.href = 'forgot.html';
-              </script>";
-    }
-}
-
-if (isset($_POST['new_password'])) {
-    if (!isset($_SESSION['reset_email'])) {
-        header("Location: forgot.html");
-        exit;
-    }
-
-    $password = $_POST['password'];
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-    
-    $stmt = $conn->prepare("UPDATE users SET password = ? WHERE email = ?");
-    $stmt->bind_param("ss", $hashedPassword, $_SESSION['reset_email']);
-    
-    if ($stmt->execute()) {
-        unset($_SESSION['reset_email']);
-        echo "<script>
-                alert('Password updated successfully!');
-                window.location.href = 'index.php';
-              </script>";
-    } else {
-        echo "<script>
-                alert('Password update failed. Please try again.');
-                window.location.href = 'forgot.html';
-              </script>";
-    }
-    $stmt->close();
-}
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add-expense'])) {
     // Check if the user is logged in - only for expense operations
     if (!isset($_SESSION['user_id'])) {
-        echo "<script>
-                alert('You must be logged in to add expenses!');
-                window.location.href = 'index.php';
-              </script>";
+        setError('You must be logged in to add expenses!');
+        header("Location: index.php");
         exit;
     }
     
@@ -247,12 +175,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add-expense'])) {
 
     // Validate inputs
     if (empty($category) || empty($amount) || empty($date) || $amount <= 0) {
-
-        echo "<script>
-            alert('Invalid input. Please provide valid category, amount, and date.');
-            window.location.href = 'dashboard.php';
-          </script>";
-    exit;
+        setError('Please provide valid category, amount, and date for the expense.');
+        header("Location: dashboard.php");
+        exit;
     }
 
     // Insert expense into the database
@@ -260,16 +185,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add-expense'])) {
     $stmt->bind_param("isds", $userId, $category, $amount, $date);
 
     if ($stmt->execute()) {
-        echo "<script>
-            alert('Expense added successfully!');
-            window.location.href = 'dashboard.php';
-          </script>";
-    exit;
+        setSuccess('Expense recorded successfully!');
+        header("Location: dashboard.php");
+        exit;
     } else {
-        echo "Error: " . $stmt->error;
+        setError('Could not save expense. Please try again.');
+        header("Location: dashboard.php");
+        exit;
     }
-
-    $stmt->close();
 }
 
 // Function to fetch expenses for the logged-in user
@@ -347,21 +270,30 @@ function deleteUser($conn, $userId) {
 
 function getAllUsers($conn) {
     try {
-        $stmt = $conn->prepare("SELECT id, fullName, email, is_banned FROM users WHERE 1");
+        $stmt = $conn->prepare("SELECT id, fullName, email, is_banned, is_admin FROM users");
         if (!$stmt) {
-            error_log("Error preparing statement: " . $conn->error);
+            error_log("Database error in getAllUsers: " . $conn->error);
             return [];
         }
+        
         if (!$stmt->execute()) {
-            error_log("Error executing statement: " . $stmt->error);
+            error_log("Execute error in getAllUsers: " . $stmt->error);
             return [];
         }
+        
         $result = $stmt->get_result();
+        if (!$result) {
+            error_log("Result error in getAllUsers: " . $stmt->error);
+            return [];
+        }
+        
         $users = $result->fetch_all(MYSQLI_ASSOC);
         $stmt->close();
+        
+        error_log("Users found: " . count($users)); // Debug log
         return $users;
     } catch (Exception $e) {
-        error_log("Error in getAllUsers: " . $e->getMessage());
+        error_log("Exception in getAllUsers: " . $e->getMessage());
         return [];
     }
 }
@@ -419,6 +351,13 @@ if (!isset($_SESSION['admin']) && basename($_SERVER['PHP_SELF']) === 'admin-dash
 // Move the route check to only apply for non-admin pages
 if (!isset($_SESSION['admin']) || $_SESSION['admin'] !== true) {
     checkValidRoute();
+}
+
+if (isset($_SESSION['admin_message'])) {
+    echo "<script>
+            alert('" . addslashes($_SESSION['admin_message']) . "');
+          </script>";
+    unset($_SESSION['admin_message']);
 }
 
 ?>
