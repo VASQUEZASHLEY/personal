@@ -38,10 +38,25 @@ while ($row = $result->fetch_assoc()) {
         <link rel="stylesheet" href="dashboard.css">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js -->
 
-
     </head>
 
     <body>
+
+        <!-- Add floating alert container -->
+        <div id="alert-container" class="alert-container" style="position: fixed; margin-right: 30px;">
+            <?php if (isset($_SESSION['error'])): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
+                </div>
+            <?php endif; ?>
+            
+            <?php if (isset($_SESSION['success'])): ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <?php echo $_SESSION['success']; unset($_SESSION['success']); ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
 
         <div class="dashboard-container">
 
@@ -71,6 +86,8 @@ while ($row = $result->fetch_assoc()) {
             </div>
 
             <div class="dashboard-right">
+
+            
 
                 <div class="dashboard-content" id="dashboard-content">
                     <h2>Expense Tracker</h2>
@@ -125,8 +142,8 @@ while ($row = $result->fetch_assoc()) {
                                 const categories = <?php echo json_encode($categories); ?>;
                                 const totals = <?php echo json_encode($totals); ?>;
                                 
-                                // Calculate total for percentages
-                                const total = totals.reduce((a, b) => a + b, 0);
+                                // Calculate total for percentages - fix NaN by ensuring numbers
+                                const total = totals.reduce((a, b) => Number(a) + Number(b), 0);
                                 
                                 // Create the pie chart
                                 const ctx = document.getElementById('expenseChart').getContext('2d');
@@ -169,9 +186,9 @@ while ($row = $result->fetch_assoc()) {
                                             tooltip: {
                                                 callbacks: {
                                                     label: function(context) {
-                                                        const value = context.raw;
+                                                        const value = Number(context.raw);
                                                         const percentage = ((value / total) * 100).toFixed(1);
-                                                        return `${context.label}: $${value} (${percentage}%)`;
+                                                        return `${context.label}: ₱${value.toFixed(2)} (${percentage}%)`;
                                                     }
                                                 }
                                             }
@@ -233,7 +250,15 @@ while ($row = $result->fetch_assoc()) {
         </div>
 
         <script src="script.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            setTimeout(function() {
+                document.querySelectorAll('.alert').forEach(function(alert) {
+                    alert.style.display = 'none';
+                });
+            }, 2000);
+        </script>
     </body>
 
 </html>
-
