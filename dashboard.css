@@ -4,6 +4,15 @@ body {
     padding: 0;
 }
 
+.alert-container {
+    
+    color: yellow;
+    padding: 10px;
+    margin-top: 240px;
+    margin-left: 380px;
+
+}
+
 .dashboard-container {
 
     display: flex;
@@ -25,7 +34,12 @@ body {
     width: 80%;
     box-sizing: border-box;
     background-color: lightgrey;
+    background-image: url(pics/personal.png);
+    background-size: cover;
+
+
 }
+
 
 .circle-parent {
 
@@ -97,6 +111,7 @@ h3 {
     width: 50%;
     margin: 20px;
     border-radius: 5px;
+    padding-bottom: 30px;
 }
 
 .dashboard-content h2 {
